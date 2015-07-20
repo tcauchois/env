@@ -1,0 +1,33 @@
+[user]
+  name = Tom
+  email = tcauchois@gmail.com
+[core]
+  editor = vim
+[color]
+  branch = auto
+  diff = auto
+  interactive = auto
+  status = auto
+[merge]
+  tool = vimdiff
+[alias]
+  diffcommit = "!f() { git diff "$1"^.."$1"; }; f"
+  filelog = log -u
+  edit-unmerged = "!f() { git diff --name-status --diff-filter=U | cut -f2 ; }; vim `f`"
+  add-unmerged = "!f() { git diff --name-status --diff-filter=U | cut -f2 ; }; git add `f`"
+  aliases = !git config --get-regexp "alias.*" | colrm 1 6 | sed 's/[ ]/ = /'
+  lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue) <%an>%Creset' --abbrev-commit --date=relative
+  empty-tree-sha1 = hash-object -t tree /dev/null
+  who = "!f() { git log --oneline --author="$1"; }; f"
+  branchdiff = "!f() { git lgleft --left-only "$1"..."$2"; echo "..."; git lgright --right-only "$1"..."$2"; }; f"
+  lgleft = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %C(yellow)(%cr) <%an>%Creset' --abbrev-commit --date=relative
+  lgright = log --graph --pretty=format:'%Cblue%h%Creset -%C(yellow)%d%Creset %s %C(yellow)(%cr) <%an>%Creset' --abbrev-commit --date=relative
+  leftfiles = "!f() { git log --left-only --name-only --pretty=format:'' "$1"..."$2" | sort | uniq | sed '/^$/d'; }; f"
+  rightfiles = "!f() { git log --right-only --name-only --pretty=format:'' "$1"..."$2" | sort | uniq | sed '/^$/d'; }; f"
+  #tomerge = "!f() { comm -12 <(git leftfiles "$1" "$2") <(git rightfiles "$1" "$2"); }; f"
+  tomerge = "!bash -c 'comm -12 <(git leftfiles "$1" "$2") <(git rightfiles "$1" "$2")'"
+  changed = diff-tree --no-commit-id --name-only -r
+  #this doesn't work :(
+  #addnw = "!f() { git apply --cached --ignore-whitespace `git diff -w --no-color $1`; }; f"
+[push]
+  default = simple
